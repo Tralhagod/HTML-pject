@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dragon Ball</title>
+        <style>
+            :root {
+            --cor-fundo: #ffffff;
+            --cor-texto: #000000;
+        }
+
+        body.dark {
+            --cor-fundo: #121212;
+            --cor-texto: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-btn {
+            background: none;
+            border: 1px solid var(--cor-texto);
+            color: var(--cor-texto);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -200px;
+            width: 200px;
+            height: 100%;
+            background-color: var(--cor-fundo);
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            padding-top: 60px;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--cor-texto);
+            border-bottom: 1px solid #ccc;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .search {
+            padding: 5px;
+        }
+
+        .noticias {
+            margin: 30px auto;
+            width: 90%;
+            max-width: 600px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .noticia-container {
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .noticia {
+            flex: 0 0 100%;
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 3s ease;
+        }
+
+        .noticia.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .noticia h2 {
+            position: absolute;
+            bottom: 0;
+            margin: 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.6);
+            color: rgb(255, 255, 255);
+            font-size: 1.5rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .noticia h2 a {
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+        }
+
+        .seta {
+            cursor: pointer;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            color: var(--cor-texto);
+        }
+
+
+        .toggle-btn {
+            cursor: pointer;
+            background: none;
+            border: 1px solid var(--cor-texto);
+            color: var(--cor-texto);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        </style>
+    </head>
+    <body>
+        <header>
+            <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+            <div class="top-right">
+                <input type="text" class="search" placeholder="Pesquisar...">
+                <a href="Compare.html">Compare</a>
+                <button class="toggle-btn" onclick="alternarModo()">🌙</button>
+            </div>
+            <nav class="sidebar" id="sidebar">
+                <a href="#">Comunidade</a>
+                <a href="#">Músicas</a>
+                <a href="#">Jogos</a>
+                <a href="#">Animes</a>
+                <a href="#">Gadgets</a>
+            </nav>
+            
+        </header>
+    <h1>Dragon Ball</h1>
+
+    <div class="noticias">
+        <button class="seta" onclick="moverEsquerda()">&#8249;</button>
+        <div class="noticia-container" id="noticiaContainer">
+            <!-- Uma notícia por vez -->
+        </div>
+        <button class="seta" onclick="moverDireita()">&#8250;</button>
+    </div>
+
+    <script>
+        function alternarModo() {
+            document.body.classList.toggle('dark');
+            const btn = document.querySelector('.toggle-btn');
+            btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+        }
+        function toggleMenu() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+        const noticias = [
+            { titulo: 'Lançamento de novo jogo!', link: '#', imagem: 'imagens/jogo1.jpg' },
+            { titulo: 'Comunidade alcança 1 milhão!', link: '#', imagem: 'imagens/comunidade.jpg' },
+            { titulo: 'Nova trilha sonora disponível!', link: '#', imagem: 'imagens/musica.jpg' },
+            { titulo: 'Episódio novo de anime!', link: '#', imagem: 'imagens/anime.jpg' },
+            { titulo: 'Novo gadget incrível!', link: '#', imagem: 'imagens/gadget.jpg' }
+        ];
+
+        let inicio = 0;
+        const container = document.getElementById("noticiaContainer");
+
+        function exibirNoticias() {
+            container.innerHTML = "";
+            noticias.forEach((noticia, index) => {
+                const div = document.createElement("div");
+                div.className = "noticia";
+                if (index === inicio) div.classList.add("active");
+                div.style.backgroundImage = `url('${noticia.imagem}')`;
+                div.innerHTML = `<h2><a href="${noticia.link}">${noticia.titulo}</a></h2>`;
+                container.appendChild(div);
+            });
+        }
+
+        function moverEsquerda() {
+            inicio = (inicio - 1 + noticias.length) % noticias.length;
+            exibirNoticias();
+        }
+
+        function moverDireita() {
+            inicio = (inicio + 1) % noticias.length;
+            exibirNoticias();
+        }
+
+        setInterval(() => {
+            moverDireita();
+        }, 30000); // 30 segundos
+
+        exibirNoticias();
+    </script>
+    <footer>
+    Site design by Marcelo
+    </footer>
+    </body>
+</html>
